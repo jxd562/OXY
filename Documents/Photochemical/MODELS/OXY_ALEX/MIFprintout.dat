@@ -1,0 +1,40 @@
+********************************************
+  OUTPUT FOR BOX MODEL OF SOLAR NEBULA
+
+
+ NQ = 14
+
+ TIME = 0.00E+00     TIMEY = 0.00E+00 YEARS
+
+ USOL = 5.000E-03
+
+ USOL = 2.500E-04
+
+ USOL = 1.250E-04
+
+ USOL = 7.500E-01
+
+ USOL = 2.400E-01
+
+ USOL = 2.500E-03
+
+ USOL = 2.500E-03
+
+ USOL = 1.200E-03
+
+ USOL = 1.200E-03
+
+ USOL = 5.000E-04
+
+ USOL = 2.500E-04
+
+ USOL = 2.500E-04
+
+ USOL = 5.000E-04
+
+ USOL = 2.500E-04
+
+ NUMBER DENSITIES OF SPECIES
+
+ N =   1  EMAX = 1.50E+03 U = 6.04-154 RHS = 2.50E-04  DT = 3.75E-01  TIME = 7.00E-09
+ N =****  EMAX =
