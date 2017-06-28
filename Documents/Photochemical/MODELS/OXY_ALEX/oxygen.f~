@@ -1,5 +1,7 @@
          PROGRAM ARC_CH4 
 
+C-JKD June 26, 2017 removed Mg species--current error: singular matrix
+
 C-JKD Modified on June 21, 2017 for mass independent fractionation of oxygen.
 C-AD Deleted parts of original photochemical code that are not needed
 C-to perform the box model of the solar nebula.
@@ -48,7 +50,7 @@ C          OTHER DEFINED FUNCTIONS INCLUDE:
 C     (1) TBDY   - COMPUTES 3-BODY REACTION RATES
 C
 C ***** REACTION LIST *****
-C ***** FIND REACTIONS IN CHEM.DAT.CH4_OMIF2 *****
+C ***** FIND REACTIONS IN CHEM.DAT.CH4_OMIF *****
 C     1)  SiO + O2 = SiO2 + O       !Thiemens#1
 C     2)  SiO + H2 = SiOH + H       !Thiemens#2
 C     3)  SiO + OH = SiO2 + H       !Thiemens#3
@@ -78,7 +80,7 @@ C    24)  H + H + H2(M) = H2 + H2(M)    !Thiemens#22
 C    25)  H + OH + H2O(M) = H2O + H2O(M)!Thiemens#23
 C
 C    26)  MgO + SiO2 = MgSiO3       !check this
-C    27)  Mg + O = MgO              !check this
+C REMOVED   27)  Mg + O = MgO              !check this
 C    28)  MgO + MgSiO3 = Mg2SiO4    !check this
 C
 C        THIS PROGRAM DOES THE CHEMISTRY AUTOMATICALLY.  THE CHEMICAL
@@ -106,7 +108,7 @@ C                       HOLDS REACTION NUMBER J.
 C     NUML(NSP) = NUMBER OF NON-ZERO ELEMENTS FOR EACH ROW OF ILOSS
 C     NUMP(NSP) = NUMBER OF NON-ZERO ELEMENTS FOR EACH ROW OF IPROD
 C
-      PARAMETER(NQ=14, NR=28, NSP=16, NMAX=10)
+      PARAMETER(NQ=13, NR=27, NSP=15, NMAX=10)
       DIMENSION FVAL(NQ),FV(NQ),DJAC(NQ,NQ),RHS(NQ),REL(NQ),IPVT(NQ)
      2  ,USAVE(NQ),USOL(NQ),TP(NQ),TL(NQ),D(NQ),INDX(NQ)
 C     DIMENSION RAT(NR)
@@ -121,8 +123,8 @@ C     DIMENSION RAT(NR)
 C-AP *************************************************************
 
       DATA LO,LO2,LO3,LH,LH2,LOH,LH2O,LHO2,LH2O2,
-     2  LSiO,LSiO2,LSiOH,LMg,LMgO,LMgSiO3,LMg2SiO4/
-     3  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16/
+     2  LSiO,LSiO2,LSiOH,LMgO,LMgSiO3,LMg2SiO4/
+     3  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15/
 C
 C ***** SPECIES DEFINITIONS *****
 C   LONG-LIVED - ALL OUR SPECIES ARE "LONG-LIVED"
@@ -138,11 +140,11 @@ C   LONG-LIVED - ALL OUR SPECIES ARE "LONG-LIVED"
       ISPEC(10) = 3HSiO
       ISPEC(11) = 4HSiO2
       ISPEC(12) = 4HSiOH
-      ISPEC(13) = 2HMg
-      ISPEC(14) = 3HMgO
+C      ISPEC(13) = 2HMg
+      ISPEC(13) = 3HMgO
 C   ROCK SPECIES (INERT SPECIES)
-      ISPEC(15) = 6HMgSiO3
-      ISPEC(16) = 7HMg2SiO4
+      ISPEC(14) = 6HMgSiO3
+      ISPEC(15) = 7HMg2SiO4
 
 C ****************************************************************
       DIRDATA='DATA'
@@ -251,7 +253,7 @@ C   **INDIVIDUAL NUMBER DENSITIES ARE GOOD**
 C
 C ***** SET MODEL PARAMETERS *****
 C     DT = INITIAL TIME STEP
-C     TSTOP = TIME AT WHICH CALCULATION IS TO STOP
+C     TSTOP = TIME AT WHICH CALCULATIONmak IS TO STOP
 C     NSTEPS = NUMBER OF TIME STEPS TO RUN (IF TSTOP IS NOT REACHED)
 C
 C     EPSJ = AMOUNT BY WHICH TO PERTURB THINGS FOR JACOBIAN CALCULATION
@@ -487,7 +489,7 @@ C
 
 C-PK ********************************
       SUBROUTINE RATES(D)
-      PARAMETER(NQ=14, NR=28, NSP=16, NMAX=10)
+      PARAMETER(NQ=13, NR=27, NSP=15, NMAX=10)
       COMMON/RBLOK/A(NR),ILOSS(2,NSP,NMAX),IPROD(NSP,NMAX),
      2  JCHEM(5,NR),NUML(NSP),NUMP(NSP),ISPEC(NSP),T,DEN
 C
@@ -524,8 +526,8 @@ C      A(24) = 2.7E-31*(T**-0.6) !HCP #22
 C      A(25) = 3.9E-25*(T**-2.)  !HCP #23
 C  ROCK REACTIONS
       A(26) = 1.0E-12           !MADE-UP
-      A(27) = 1.0E-12           !MADE-UP
-      A(28) = 6.0E-34           !MADE-UP
+C      A(27) = 1.0E-12           !MADE-UP
+      A(27) = 6.0E-34           !MADE-UP
 C
 C
 C ***** THREE-BODY COEFFICIENTS *****
@@ -575,7 +577,7 @@ C     Complicated kinetics, maybe Marcus (?)
 
 C-AD ***************************************************
       SUBROUTINE OUTPUT(USOL,N,NSTEPS,TIME)
-      PARAMETER (NQ=14, NR=28, NSP=16, NMAX=10)
+      PARAMETER (NQ=13, NR=27, NSP=15, NMAX=10)
       DIMENSION USOL(NQ),D(NSP)
       COMMON/ZBLOK/RAT(NR),TP(NQ),TL(NQ)
       COMMON/NBLOK/LO,LO2,LO3,LH,LH2,LOH,LH2O,LHO2,LH2O2,
@@ -725,7 +727,7 @@ C      END
 
 C-AD **********************************
       SUBROUTINE DOCHEM(USOL,FVAL,N)                                             
-      PARAMETER(NQ=14, NR=28, NSP=16, NMAX=10)                                           
+      PARAMETER(NQ=13, NR=27, NSP=15, NMAX=10)                                           
       DIMENSION FVAL(NQ),D(NQ),USOL(NQ)
       COMMON/ZBLOK/RAT(NR),TP(NQ),TL(NQ)
 C TP--total production, TL--totl loss (indexed by species)
@@ -758,6 +760,21 @@ C line above should work, XP, XL, DEN are 1-D b/c no Z-term
    5  CONTINUE
 C     IF (N.LT.1) RETURN
 
+C *****CALCULATE MgO INPUT ******
+
+C MADD - MgO ADDITION variable
+      
+      MADD =  1.000E10 ! mol / cm^3 sec^-1 (density)
+      FVAL(LMgO) = FVAL(LMgO) + MADD/DEN
+      TP(LMgO) = TP(LMgO) + MADD
+
+C *****CALCULATE H2O SINK  ******
+C HLOSS - H2O LOSS variable
+
+C      HLOSS = 1.500E3
+C      XL(LH2O)
+C      FVAL(LH20) = XP
+
 C ***** CALCULATE PRODUCTION AND LOSS *****
       DO 10 L=1,NR
   10  RAT(L) = 0.
@@ -779,7 +796,7 @@ C PROB DON'T NEED STUFF ABOVE, KEPT FOR FUN
       END
 C-PK *******************************
       SUBROUTINE CHEMPL(D,XP,XL,K)
-      PARAMETER(NQ=14, NR=28, NSP=16, NMAX=10)
+      PARAMETER(NQ=13, NR=27, NSP=15, NMAX=10)
       DIMENSION D(NQ)
       COMMON/RBLOK/A(NR),ILOSS(2,NSP,NMAX),IPROD(NSP,NMAX),
      2  JCHEM(5,NR),NUML(NSP),NUMP(NSP),ISPEC(NSP),T,DEN
@@ -816,58 +833,7 @@ c748  FORMAT (1P2E10.3)
       RETURN
       END
 
-C-AD ****************************************
-C     SUBROUTINE ISOTOPE(NQ,NR,NSP)
-C     PARAMETER (NQ=25,NR=95,NSP=29,NMAX=15)
-C
-C     COMMON/NBLOK/LO,LXO,LO2,LOXO,LO3,LO2XO,LH,LH2,LOH,LXOH,LH2O,LH2XO,
-C    2  LHO2,LHOXO,LH2O2,LH2OXO,LSiO,LSiXO,LSiO2,LSiOXO,LSiOH,LSiXOH,
-C    3  LMg,LMgO,LMgXO,LMgSiO3,LMgSiO2XO,LMg2SiO4,LMg2SiO3XO
-C
-C     DATA LO,LXO,LO2,LOXO,LO3,LO2XO,LH,LH2,LOH,LXOH,LH2O,LH2XO,
-C    2  LHO2,LHOXO,LH2O2,LH2OXO,LSiO,LSiXO,LSiO2,LSiOXO,LSiOH,LSiXOH,
-C    3  LMg,LMgO,LMgXO,LMgSiO3,LMgSiO2XO,LMg2SiO4,LMg2SiO3XO/
-C    4  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23
-C    5  24,25,26,27,28,29/
-C
-C ***** SPECIES DEFINITIONS *****
-C   LONG-LIVED - ALL OUR SPECIES ARE "LONG-LIVED"
-C     ISPEC(1) = 1HO
-C     ISPEC(2) = 2HXO
-C     ISPEC(3) = 2HO2
-C     ISPEC(4) = 3HOXO
-C     ISPEC(5) = 2HO3
-C     ISPEC(6) = 4HO2XO
-C     ISPEC(7) = 1HH
-C     ISPEC(8) = 2HH2
-C     ISPEC(9) = 2HOH
-C     ISPEC(10) = 3HXOH
-C     ISPEC(11) = 3HH2O
-C     ISPEC(12) = 4HH2XO
-C     ISPEC(13) = 3HHO2
-C     ISPEC(14) = 4HHOXO
-C     ISPEC(15) = 4HH2O2
-C     ISPEC(16) = 5HH2OXO
-C     ISPEC(17) = 3HSiO
-C     ISPEC(18) = 4HSiXO
-C     ISPEC(19) = 4HSiO2
-C     ISPEC(20) = 5HSiOXO
-C     ISPEC(21) = 4HSiOH
-C     ISPEC(22) = 5HSiXOH
-C     ISPEC(23) = 2HMg
-C     ISPEC(24) = 3HMgO
-C     ISPEC(25) = 4HMgXO
-C   ROCK SPECIES (INERT SPECIES)
-C     ISPEC(26) = 6HMgSiO3
-C     ISPEC(27) = 8HMgSiO2XO
-C     ISPEC(28) = 7HMg2SiO4
-C     ISPEC(29) = 9HMg2SiO3XO
-C
-C ***** NEW REACTION LIST IN CHEM.DAT.CH4_ISOTOPE*****
-C
-C INITALIZE FROM CONVERGED OUTPUT OF MAIN CODE.
-C INITIAL CONDITIONS ARE OUTPUT FROM MAIN ROUTINE
-C SHOULD BE ABLE TO RUN NEWTONS METHOD
+
 
 C-PK ****************************************
       SUBROUTINE LUDCMP(A,N,NP,INDX,D)
