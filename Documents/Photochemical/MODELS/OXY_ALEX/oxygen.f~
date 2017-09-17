@@ -762,18 +762,18 @@ C     IF (N.LT.1) RETURN
 
 C *****CALCULATE MgO INPUT ******
 
-C MADD - MgO ADDITION variable
+C MADD - MgO ADDITION variable (c.f Lightning / V-outgassing)
       
       MADD =  1.000E10 ! mol / cm^3 sec^-1 (density)
       FVAL(LMgO) = FVAL(LMgO) + MADD/DEN
       TP(LMgO) = TP(LMgO) + MADD
 
 C *****CALCULATE H2O SINK  ******
-C HLOSS - H2O LOSS variable
+C HLOSS - H2O LOSS variable (c.f.Rainout)
 
-C      HLOSS = 1.500E3
-C      XL(LH2O)
-C      FVAL(LH20) = XP
+      HLOSS = 1.500E3 !units of sec^-1 
+      TL(LH2O) = TL(LH2O) + HLOSS
+      FVAL(LH2O) = TP(LH2O)/DEN - HLOSS*USOL(LH2O)
 
 C ***** CALCULATE PRODUCTION AND LOSS *****
       DO 10 L=1,NR

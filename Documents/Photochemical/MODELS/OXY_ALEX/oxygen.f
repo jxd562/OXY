@@ -68,9 +68,9 @@ C    14)  O + H2O2 = OH + HO2       !Thiemens#15
 C    15)  OH + H2 = H2O + H         !Thiemens#16
 C    16)  OH + HO2 = H2O + O2       !Thiemens#17
 C    17)  OH + H2O2 = H2O + HO2     !Thiemens#18
-C    18)  HO2 + HO2 = H2O2 + O2     !Thiemens#24
-C    19)  OH + O3 = HO2 + O2        !Thiemens#25
-C    20)  HO2 + O3 = OH + O2 + O2 !(2O2)    !Thiemens#1
+C    18)  HO2 + HO2 = H2O2 + O2     !Thiemens#19
+C    19)  OH + O3 = HO2 + O2        !Thiemens#24
+C    20)  HO2 + O3 = OH + O2 + O2   !Thiemens#25 (2O2)
 C
 C ***** THREE BODY RXN ***** ELIMINATE COMMON TERMS 
 C    21)  O + O2 + M = O3 + M           !Thiemens#8
@@ -78,6 +78,8 @@ C    22)  H + O2 + H2O(M) = HO2 + H2O(M)!Thiemens#20
 C    23)  H + O2 + H2(M) = HO2 + H2(M)  !Thiemens#21
 C    24)  H + H + H2(M) = H2 + H2(M)    !Thiemens#22
 C    25)  H + OH + H2O(M) = H2O + H2O(M)!Thiemens#23
+C
+C ***** ROCK-FORMING REACTIONS ****
 C
 C    26)  MgO + SiO2 = MgSiO3       !check this
 C REMOVED   27)  Mg + O = MgO              !check this

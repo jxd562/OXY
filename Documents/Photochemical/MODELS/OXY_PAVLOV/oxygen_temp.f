@@ -52,7 +52,7 @@ C
 C ***** REACTION LIST *****
 C ***** FIND REACTIONS IN CHEM.DAT.CH4_OMIF *****
 C     1)  SiQ + O2 = SiOQ + O       !Thiemens#1
-C     2)  SiQ + O2 = SiOQ + O       !Thiemens#1
+C     2)  SiQ + O2 = SiO2 + Q       !Thiemens#1
 C     3)  SiO + OQ = SiOQ + O       !Thiemens#1
 C     4)  SiO + OQ = SiO2 + Q       !Thiemens#1
 C   
@@ -120,9 +120,9 @@ C    46)  OH + O2Q = HOQ + O2       !Thiemens#24
 C    47)  OH + O2Q = HO2 + OQ       !Thiemens#24
 C
 C    48)  HOQ + O3 = QH + O2 + O2   !Thiemens#25 (2O2)
-C    49)  HOQ + O3 = QH + OQ + O2   !Thiemens#25 (2O2)
+C    49)  HOQ + O3 = OH + OQ + O2   !Thiemens#25 (2O2)
 C    50)  HO2 + O2Q = QH + O2 + O2  !Thiemens#25 (2O2)
-C    51)  HO2 + O2O = OH + OQ + O2  !Thiemens#25 (2O2)
+C    51)  HO2 + O2Q = OH + OQ + O2  !Thiemens#25 (2O2)
 C for Pavlov model, add 49 & 51 again (see end of rxn list)
 C
 CC ***** THREE BODY RXN ***** ELIMINATE COMMON TERMS 

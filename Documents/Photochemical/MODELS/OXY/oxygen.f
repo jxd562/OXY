@@ -107,11 +107,12 @@ C                       HOLDS REACTION NUMBER J.
 C     NUML(NSP) = NUMBER OF NON-ZERO ELEMENTS FOR EACH ROW OF ILOSS
 C     NUMP(NSP) = NUMBER OF NON-ZERO ELEMENTS FOR EACH ROW OF IPROD
 C
-      PARAMETER(NQ=14, NR=28, NSP=16, NMAX=10)
+      PARAMETER(NQ=13, NR=28, NSP=15, NMAX=10)
       DIMENSION FVAL(NQ),FV(NQ),DJAC(NQ,NQ),RHS(NQ),REL(NQ),IPVT(NQ)
-     2  ,USAVE(NQ),USOL(NQ),ISPEC(NSP),TP(NQ),TL(NQ)
+     2  ,USAVE(NQ),USOL(NQ),TP(NQ),TL(NQ),ISPEC(NSP)
       DIMENSION RAT(NR)
       CHARACTER*30 CHEM(5,NR),PRODRX(NSP,NR),LOSSRX(NSP,NR)
+      CHARACTER*12 FILSPEC
       CHARACTER*4,DIRDATA
      
       COMMON/NBLOK/LO,LO2,LO3,LH,LH2,LOH,LH2O,LHO2,LH2O2,
@@ -121,34 +122,47 @@ C
       COMMON/DBLOK/D(NQ)
 C-AP *************************************************************
 
-      DATA LO,LO2,LO3,LH,LH2,LOH,LH2O,LHO2,LH2O2,
-     2  LSiO,LSiO2,LSiOH,LMg,LMgO,LMgSiO3,LMg2SiO4/
-     3  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16/
+      DATA LO,LO2,LH,LOH,LH2O,LHO2,LH2O2,
+     2  LSiO,LSiO2,LSiOH,LMgO,LMgSiO3,LMg2SiO4,LO3,LH2/
+     3  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15/
+C      DATA LO,LO2,LO3,LH,LH2,LOH,LH2O,LHO2,LH2O2,
+C     2  LSiO,LSiO2,LSiOH,LMg,LMgO,LMgSiO3,LMg2SiO4/
+C     3  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16/
 C
 C ***** SPECIES DEFINITIONS *****
 C   LONG-LIVED - ALL OUR SPECIES ARE "LONG-LIVED"
-      ISPEC(1) = 1HO
-      ISPEC(2) = 2HO2
-      ISPEC(3) = 2HO3
-      ISPEC(4) = 1HH
-      ISPEC(5) = 2HH2
-      ISPEC(6) = 2HOH
-      ISPEC(7) = 3HH2O
-      ISPEC(8) = 3HHO2
-      ISPEC(9) = 4HH2O2
-      ISPEC(10) = 3HSiO
-      ISPEC(11) = 4HSiO2
-      ISPEC(12) = 4HSiOH
-      ISPEC(13) = 2HMg
-      ISPEC(14) = 3HMgO
-C   ROCK SPECIES (INERT SPECIES)
-      ISPEC(15) = 6HMgSiO3
-      ISPEC(16) = 7HMg2SiO4
+C      ISPEC(1) = 1HO
+C      ISPEC(2) = 2HO2
+C SHORT-LIVED
+C      ISPEC(3) = 2HO3
+C
+C      ISPEC(4) = 1HH
+C INERT
+C      ISPEC(5) = 2HH2
+C
+C      ISPEC(6) = 2HOH
+C      ISPEC(7) = 3HH2O
+C      ISPEC(8) = 3HHO2
+C      ISPEC(9) = 4HH2O2
+C      ISPEC(10) = 3HSiO
+C      ISPEC(11) = 4HSiO2
+C      ISPEC(12) = 4HSiOH
+C      ISPEC(13) = 2HMg
+C      ISPEC(14) = 3HMgO
+C   ROCK SPECIES (LONG-LIVED)
+C      ISPEC(15) = 6HMgSiO3
+C      ISPEC(16) = 7HMg2SiO4
 
 C ****************************************************************
       DIRDATA='DATA'
 C Input files
+      OPEN(UNIT=1,FILE='species_matrix.dat')
+
+C
+C ORIGINAL FILES
+C
       OPEN(UNIT=7,FILE='species+T_in.dat')
+
       OPEN(UNIT=9,FILE=DIRDATA//'/CHEM.DAT.CH4_OMIF2')
 C
 C Output files
@@ -164,10 +178,28 @@ C ***** READ THE CHEMISTRY DATA CARDS *****
 C      print 201,(J,(JCHEM(M,J),M=1,5),J=1,NR)
 C 201  FORMAT(1X,I3,1H),5X,A8,4H +  ,A8,7H  =    ,A8,4H +  ,A8,4X,A8)
 
+C ***** READ SPECIES FILE ****
+
+C      READ(1,*)ISPEC,USOL
+
+      READ(1,201)ISPEC
+ 201  FORMAT(A9)
+
+      PRINT 201,ISPEC
+
+      READ(1,*)FILSPEC,USOL
+
+C      READ(1,203)USOL
+C 203  FORMAT(1P1E10.3)
+
 C
 C ***** REPLACE HOLLERITH LABELS WITH SPECIES NUMBERS IN JCHEM *****
+C EQ = equal, NE = not equal
+
       DO 5 J=1,NR
-      DO 5 M=1,5
+      DO 5 M=1,5 
+C NR - number of rxns, M to 5 b/c max prod / reactant species
+
       IF(JCHEM(M,J).EQ.1H ) GO TO 5
       DO 6 I=1,NSP
       IF(JCHEM(M,J).NE.ISPEC(I)) GO TO 6
@@ -178,6 +210,7 @@ C ***** REPLACE HOLLERITH LABELS WITH SPECIES NUMBERS IN JCHEM *****
       GO TO 25
    5  CONTINUE
       PRINT *
+
 C      print 401,(J,(JCHEM(M,J),M=1,5),J=1,NR)
 C 401  FORMAT(1X,I3,1H),5X,I2,4H +  ,I2,7H  =    ,I2,4H +  ,I2,4X,I2)
 
@@ -186,6 +219,8 @@ C      REWIND 9
 C      READ(9,200)CHEM
 C
 C ***** FILL UP CHEMICAL PRODUCTION AND LOSS MATRICES *****
+C LT = less than, OR = or, GT = greater than
+
       DO 7 M=1,2
       N = 3-M
       DO 7 J=1,NR
